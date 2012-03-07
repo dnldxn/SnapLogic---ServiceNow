@@ -1,4 +1,9 @@
-# This is a sample Read Component
+# This is the Connection Component
+com.snaplogic.ServiceNow.Connection {
+allow java.security.AllPermission;
+}
+
+# This is the Read Component
 com.snaplogic.ServiceNow.ServiceNowReader {
 allow java.security.AllPermission;
 }

@@ -1,1 +1,1 @@
-SnapLogic-Components: com.snaplogic.ServiceNow.ServiceNowReader
+SnapLogic-Components: com.snaplogic.ServiceNow.Connection, com.snaplogic.ServiceNow.ServiceNowReader

@@ -19,8 +19,11 @@ import org.snaplogic.cc.prop.SimpleProp;
 import org.snaplogic.cc.prop.SimpleProp.SimplePropType;
 import org.snaplogic.codehaus.jackson.JsonFactory;
 import org.snaplogic.codehaus.jackson.JsonParseException;
+import org.snaplogic.common.ComponentResourceErr;
 import org.snaplogic.common.Field;
 import org.snaplogic.common.Record;
+import org.snaplogic.common.exceptions.SnapComponentException;
+import org.snaplogic.snapi.ResDef;
 import org.snaplogic.util.Base64;
 
 public class ServiceNowReader extends ComponentAPI {
@@ -59,9 +62,12 @@ public class ServiceNowReader extends ComponentAPI {
 	@Override
 	public void createResourceTemplate() {
 		// Initialize User Defined Properties
-		//setPropertyDef("xsdfilename", new SimpleProp("XSD File name",
-		//		SimplePropType.SnapString, "The URI of the XSD file", null,
-		//		true));
+		
+		setPropertyDef("connection", new SimpleProp("ServiceNow Connection Resource URI",
+				SimplePropType.SnapString, "Connection resource", true));
+		
+		setPropertyDef("query", new SimpleProp("ServiceNow Query",
+				SimplePropType.SnapString, "ServiceNow Query", true));
 
 		// Initialize Input View
 		//ArrayList<Field> infields = new ArrayList<Field>();
@@ -76,29 +82,53 @@ public class ServiceNowReader extends ComponentAPI {
 			//	"ID"));
 		//addRecordOutputViewDef("Output", fields, "Default Output View", false);
 	}
+	
+	public void suggestResourceValues(ComponentResourceErr errObj) {
+		List<Field> outputViewFields = new ArrayList<Field>();
+		
+		//loop add fields
+		outputViewFields.add(new Field("active", Field.SnapFieldType.SnapString));
+		outputViewFields.add(new Field("activity_due", Field.SnapFieldType.SnapString));
+		outputViewFields.add(new Field("approval", Field.SnapFieldType.SnapString));
+		outputViewFields.add(new Field("assigned_to", Field.SnapFieldType.SnapString));
+		outputViewFields.add(new Field("number", Field.SnapFieldType.SnapString));
+		
+		addRecordOutputViewDef("Output", outputViewFields, "Some Output", true);
+	}
 
 	public void execute(Map<String, InputView> inputViews, Map<String, OutputView> outputViews) {
 
-		debug("Starting execute...");
+		String connection = getStringPropertyValue("connection");
+		String queryString = getStringPropertyValue("query");
 		
-		String host = "https://snaplogic.service-now.com/incident.do?JSON&";
-		String urlStringRead = "sysparm_action=getRecords&sysparm_query=active=true^category=hardware";
+		if (connection == null) {
+			throw new SnapComponentException("ServiceNow login details not set");
+		}
 		
-		JsonFactory f = new JsonFactory();
+		//Getting a handle to the connection component with the credentials and get those values.
+		ResDef resdef = this.getLocalResourceObject(connection);
+		String host = resdef.getPropertyValue("server").toString();
+		String username = resdef.getPropertyValue("username").toString();
+		String password = resdef.getPropertyValue("password").toString();
+		
+		
+		//String host = "https://snaplogic.service-now.com/incident.do?JSON&";
+		//String queryString = "/incident.do?JSON&sysparm_action=getRecords&sysparm_query=active=true^category=hardware";
+		String authorizationString = "Basic "
+				+ Base64.encodeBytes((username+":"+password).getBytes());
+		
 		URL url;
-		
 		OutputView outputView = outputViews.values().iterator().next();
 		Record outRec;
+		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
-			url = new URL(host + urlStringRead);
+			url = new URL(host + queryString);
 			HttpURLConnection urlConn = (HttpURLConnection) url
 					.openConnection();
-			String authorizationString = "Basic "
-					+ Base64.encodeBytes("admin:admin".getBytes());
 			urlConn.setRequestProperty("Authorization", authorizationString);
 			
-			ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+			//read Json data from ServiceNow into Map object
 			Map<String,Object> userData = mapper.readValue(urlConn.getInputStream(), Map.class);
 			
 			for( String recordKey : userData.keySet() ) { 	// should only have one top-level record attribute
@@ -107,11 +137,9 @@ public class ServiceNowReader extends ComponentAPI {
 				while(i.hasNext()) {
 					Map<String, String> incident = (Map<String, String>)i.next();
 					outRec = outputView.createRecord();
+					
 					for( String attributeKey : incident.keySet() ) {
-						//Object attributeValue = incident.get(attributeKey);
-						
 						outRec.set(attributeKey, incident.get(attributeKey));
-						
 					}
 					outputView.writeRecord(outRec);
 				}
@@ -124,7 +152,7 @@ public class ServiceNowReader extends ComponentAPI {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		debug("Finished Validating...");
+		
+		outputView.completed();
 	}
 }
