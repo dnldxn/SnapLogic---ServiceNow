@@ -1,1 +1,1 @@
-SnapLogic-Components: com.snaplogic.ServiceNow.CreateComponent, com.snaplogic.ServiceNow.ReadComponent, com.snaplogic.ServiceNow.UpdateComponent, com.snaplogic.ServiceNow.DeleteComponent
+SnapLogic-Components: com.snaplogic.ServiceNow.ServiceNowReader

@@ -33,7 +33,7 @@ public class ServiceNowReader extends ComponentAPI {
 	}
 
 	public String getLabel() {
-		return "Binary XML Validator";
+		return "ServiceNow Reader";
 	}
 
 	/**
@@ -52,7 +52,6 @@ public class ServiceNowReader extends ComponentAPI {
 				put(Capability.INPUT_VIEW_UPPER_LIMIT, 0);
 				put(Capability.OUTPUT_VIEW_LOWER_LIMIT, 1);
 				put(Capability.OUTPUT_VIEW_UPPER_LIMIT, 1);
-				put(Capability.INPUT_VIEW_ALLOW_BINARY, true);
 			}
 		};
 	}
@@ -60,9 +59,9 @@ public class ServiceNowReader extends ComponentAPI {
 	@Override
 	public void createResourceTemplate() {
 		// Initialize User Defined Properties
-		setPropertyDef("xsdfilename", new SimpleProp("XSD File name",
-				SimplePropType.SnapString, "The URI of the XSD file", null,
-				true));
+		//setPropertyDef("xsdfilename", new SimpleProp("XSD File name",
+		//		SimplePropType.SnapString, "The URI of the XSD file", null,
+		//		true));
 
 		// Initialize Input View
 		//ArrayList<Field> infields = new ArrayList<Field>();
@@ -70,12 +69,12 @@ public class ServiceNowReader extends ComponentAPI {
 		//addRecordInputViewDef("Input", infields, "Default Input View", false);
 		
 		// Initialize Output View
-		ArrayList<Field> fields = new ArrayList<Field>();
-		fields.add(new Field("active", Field.SnapFieldType.SnapString,
-				"Active"));
-		fields.add(new Field("number", Field.SnapFieldType.SnapNumber,
-				"ID"));
-		addRecordOutputViewDef("Output", fields, "Default Output View", false);
+		//ArrayList<Field> fields = new ArrayList<Field>();
+		//fields.add(new Field("active", Field.SnapFieldType.SnapString,
+		//		"Active"));
+		//fields.add(new Field("number", Field.SnapFieldType.SnapNumber,
+			//	"ID"));
+		//addRecordOutputViewDef("Output", fields, "Default Output View", false);
 	}
 
 	public void execute(Map<String, InputView> inputViews, Map<String, OutputView> outputViews) {

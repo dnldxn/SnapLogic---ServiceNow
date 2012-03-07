@@ -122,7 +122,7 @@
 		<!-- Update this entry to modify your snap name -->
 		<snap>ServiceNow</snap>
 		<!-- Server url for deployment -->
-		<serverURL>https://oshfsl02.obs.outback.com:8088</serverURL>
+		<serverURL>http://localhost:8088</serverURL>
 		<!-- Please uncomment the following line to exclude these components while 
 			making MANIFEST.MF entries -->
 		<!-- <excluded_components>com.snaplogic.ServiceNow.CreateComponent, com.snaplogic.ServiceNow.ReadComponent, 
