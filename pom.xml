@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.snaplogic</groupId>
+	<artifactId>ServiceNow</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ServiceNow</name>
+	<url>http://www.SnapLogic.com</url>
+	<repositories>
+		<repository>
+			<id>Snaplogic-Maven-Repository</id>
+			<name>Snaplogic Maven Repository</name>
+			<url>http://maven.snaplogic.org/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Snaplogic-Maven-Repository</id>
+			<name>Snaplogic Maven Repository</name>
+			<url>http://maven.snaplogic.org/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+	<!-- Snap zip assembly descriptor -->
+	<build>
+		<finalName>${snap}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>com.snaplogic</groupId>
+					<artifactId>SnapPlugin</artifactId>
+					<version>1.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- Set source level -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<!-- Assembly instructions for creating snap zip -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<inherited>false</inherited>
+				<configuration>
+					<descriptors>
+						<descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+					<finalName>${snap}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Add custom Manifest.mf file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<!-- Platform independent build -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Update this entry to modify your company name -->
+		<company>SnapLogic</company>
+		<!-- Update this entry to modify your snap name -->
+		<snap>ServiceNow</snap>
+		<!-- Server url for deployment -->
+		<serverURL>https://oshfsl02.obs.outback.com:8088</serverURL>
+		<!-- Please uncomment the following line to exclude these components while 
+			making MANIFEST.MF entries -->
+		<!-- <excluded_components>com.snaplogic.ServiceNow.CreateComponent, com.snaplogic.ServiceNow.ReadComponent, 
+			com.snaplogic.ServiceNow.UpdateComponent, com.snaplogic.ServiceNow.DeleteComponent</excluded_components> -->
+		<!-- Please uncomment the following line to specify the components that 
+			needs to be added to the MANIFEST.MF entries -->
+		<!-- <included_components>com.snaplogic.ServiceNow.CreateComponent, com.snaplogic.ServiceNow.ReadComponent, 
+			com.snaplogic.ServiceNow.UpdateComponent, com.snaplogic.ServiceNow.DeleteComponent</included_components> -->
+	</properties>
+
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.snaplogic</groupId>
+			<artifactId>JavaCC</artifactId>
+			<version>1.0</version>
+			<systemPath>C:/Program Files/snaplogic/3.3.1.18328PE/lib/javacc.jar</systemPath>
+			<scope>system</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.snaplogic</groupId>
+			<artifactId>JSnAPI</artifactId>
+			<version>1.0</version>
+			<systemPath>C:/Program Files/snaplogic/3.3.1.18328PE/lib/snapi.jar</systemPath>
+			<scope>system</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+	</dependencies>
+</project>

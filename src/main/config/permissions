@@ -1,0 +1,4 @@
+# This is a sample Read Component
+com.snaplogic.ServiceNow.ServiceNowReader {
+allow java.security.AllPermission;
+}
